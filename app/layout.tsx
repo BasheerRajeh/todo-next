@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const inter = Inter({
     variable: "--font-inter",
@@ -23,9 +24,10 @@ export default function RootLayout({
         <html lang="en" className={cn(inter.variable, "dark scroll-smooth")}>
             <body className="font-default">
                 <Header />
-                <main className="relative mx-auto min-h-screen max-w-4xl px-8">
+                <main className="relative mx-auto min-h-[calc(100vh-56px-64px)] max-w-4xl px-8">
                     {children}
                 </main>
+                <Footer />
             </body>
         </html>
     );
