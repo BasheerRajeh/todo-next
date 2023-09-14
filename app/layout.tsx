@@ -21,10 +21,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={cn(inter.variable, "dark scroll-smooth")}>
+        <html lang="en" className={cn(inter.variable, "dark scroll-smooth")} suppressHydrationWarning={true}>
             <body className="font-default">
                 <Header />
-                <main className="relative mx-auto min-h-[calc(100vh-56px-64px)] max-w-4xl px-8">
+                <main className="relative mx-auto min-h-[calc(100vh-56px-64px)] max-w-4xl px-8 py-24">
                     {children}
                 </main>
                 <Footer />
