@@ -29,7 +29,7 @@ export const metadata: Metadata = {
             "max-snippet": -1,
         },
     },
-    manifest: "/favicon/site.webmanifest",
+    manifest: "/site.webmanifest",
     keywords: site.keywords,
     themeColor: "#000",
     creator: "BasheerRajeh",
@@ -42,11 +42,11 @@ export const metadata: Metadata = {
         locale: "en-US",
     },
     icons: {
-        icon: "/favicon/favicon.svg",
-        shortcut: "/favicon/favicon.svg",
+        icon: "/favicon.svg",
+        shortcut: "/favicon.svg",
         apple: [
             {
-                url: "/favicon/apple-touch-icon.png",
+                url: "/apple-touch-icon.png",
                 sizes: "180x180",
                 type: "image/png",
             },
