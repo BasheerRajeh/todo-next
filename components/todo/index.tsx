@@ -1,46 +1,84 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { v4 as uuid4 } from "uuid";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+
 import TodoForm from "@/components/todo/todoForm";
 import { Todo } from "@/components/todo/todoItem";
 import TodoList from "@/components/todo/todoList";
-import { auth } from "@/lib/firebase/app";
+import { auth, firestore } from "@/lib/firebase/app";
 
 const Todo = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
-    const [open, setOpen] = useState(false);
     const [user, loading] = useAuthState(auth);
 
     useEffect(() => {
-        if (!user && !loading) return setOpen(true);
-        setOpen(false);
-    }, [loading, user]);
+        let unsubscribe: () => void;
 
-    const addTodo = (title: string) => {
-        setTodos((prev) => [...prev, { id: uuid4(), title, completed: false }]);
-    };
+        if (user) {
+            const todosDocRef = doc(firestore, "users", user?.uid);
 
-    const handleComplete = (id: string) => {
-        setTodos((prev) => {
-            const newTodos = prev.map((todo) =>
-                todo.id === id ? { ...todo, completed: !todo.completed } : todo
-            );
-            return newTodos;
+            unsubscribe = onSnapshot(todosDocRef, (d) => {
+                if (d.exists() && d.data()) {
+                    setTodos(d.data().todos as Todo[]);
+                }
+            });
+        }
+
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
+    }, [user]);
+
+    const addTodo = async (title: string) => {
+        const todosDocRef = doc(firestore, "users", user?.uid as string);
+
+        await setDoc(todosDocRef, {
+            todos: [
+                ...todos,
+                {
+                    id: uuid4(),
+                    title,
+                    completed: false,
+                },
+            ],
         });
     };
-    const handleDelete = (id: string) => {
-        setTodos((prev) => prev.filter((todo) => todo.id !== id));
+
+    const handleComplete = async (id: string) => {
+        const todosDocRef = doc(firestore, "users", user?.uid as string);
+        const newTodos = todos.map((todo) =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        );
+
+        await setDoc(todosDocRef, {
+            todos: newTodos,
+        });
+    };
+
+    const handleDelete = async (id: string) => {
+        const todosDocRef = doc(firestore, "users", user?.uid as string);
+        const newTodos = todos.filter((todo) => todo.id !== id);
+
+        await setDoc(todosDocRef, {
+            todos: newTodos,
+        });
     };
 
     return (
         <>
             <TodoForm onSubmit={addTodo} />
-            <TodoList
-                todos={todos}
-                onComplete={handleComplete}
-                onDelete={handleDelete}
-            />
+            {!loading ? (
+                <TodoList
+                    todos={todos}
+                    onComplete={handleComplete}
+                    onDelete={handleDelete}
+                />
+            ) : (
+                <h2 className="text-center">Fetching data...</h2>
+            )}
         </>
     );
 };

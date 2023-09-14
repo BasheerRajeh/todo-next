@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 
 interface TodoFormProps {
+    disable?: boolean;
     onSubmit: (todo: string) => void;
 }
 
-const TodoForm: React.FC<TodoFormProps> = ({ onSubmit }) => {
+const TodoForm: React.FC<TodoFormProps> = ({ disable, onSubmit }) => {
     const [todo, setTodo] = useState("");
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -25,11 +26,12 @@ const TodoForm: React.FC<TodoFormProps> = ({ onSubmit }) => {
             <Input
                 type="text"
                 value={todo}
+                disabled={disable}
                 onChange={(e) => setTodo(e.target.value)}
                 placeholder="Add todo..."
                 className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 focus-within:border-1 focus-within:border-white"
             />
-            <Button type="submit" aria-label="Add todo">
+            <Button type="submit" disabled={disable} aria-label="Add todo">
                 Add
             </Button>
         </form>
