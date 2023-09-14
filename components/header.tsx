@@ -1,5 +1,9 @@
-import { Logo } from "./ui/Logo";
-import { Button } from "./ui/button";
+"use client";
+
+import { Logo } from "@/components/ui/Logo";
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/firebase/app";
+import { signOut } from "firebase/auth";
 
 const Header = () => {
     return (
@@ -8,7 +12,11 @@ const Header = () => {
                 <Logo />
                 Todo
             </div>
-            <Button type="button" className="absolute right-8 px-2 py-1">
+            <Button
+                type="button"
+                onClick={() => signOut(auth)}
+                className="absolute right-8 px-2 py-1"
+            >
                 Logout
             </Button>
         </header>
